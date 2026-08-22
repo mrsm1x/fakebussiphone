@@ -2,6 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <!-- Мета-теги для полноэкранного режима PWA (чтобы скрыть браузерную строку) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>iOS SMS Interface - 1 to 1</title>
     <style>
@@ -9,7 +12,6 @@
             --ios-bg: #000000;
             --ios-gray-bubble: #262628;
             --ios-green-bubble: #34C759;
-            --ios-blur-bg: rgba(15, 15, 15, 0.75);
             --ios-text-primary: #ffffff;
             --ios-text-secondary: #8e8e93;
         }
@@ -52,7 +54,6 @@
             z-index: 100;
         }
 
-        /* Более прозрачный градиент и блюр */
         .header::before {
             content: "";
             position: absolute;
@@ -60,7 +61,6 @@
             left: 0; 
             right: 0; 
             bottom: -20px; 
-            /* Снижена непрозрачность для лучшей видимости текста под шапкой */
             background: linear-gradient(to bottom, rgba(0,0,0,0.80) 10%, rgba(0,0,0,0.3) 60%, transparent 100%);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -74,7 +74,7 @@
             display: flex;
             align-items: center;
             flex: 1;
-            padding-top: 10px;
+            padding-top: 12px;
         }
 
         .back-pill {
@@ -106,42 +106,43 @@
             flex: 1;
         }
 
-        /* АВАТАР */
+        /* ОГРОМНЫЙ АВАТАР */
         .avatar {
-            width: 70px;
-            height: 70px;
+            width: 86px;
+            height: 86px;
             background: linear-gradient(180deg, #6b6388 0%, #312e3e 100%);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: -10px;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0,0,0,0.4); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+            position: relative;
+            z-index: 2;
         }
 
         .avatar svg {
             fill: #e5e5ea;
-            width: 48px;
-            height: 48px;
-            margin-top: 10px;
+            width: 60px;
+            height: 60px;
+            margin-top: 14px;
         }
 
-        /* ПЛАШКА ДЛЯ ИМЕНИ (Закрашенная и заблюренная, как на скриншоте) */
+        /* ПЛАШКА ДЛЯ ИМЕНИ */
         .contact-name-container {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
-            
-            /* Фон, блюр и рамка */
             background-color: rgba(40, 40, 44, 0.7); 
             -webkit-backdrop-filter: blur(25px) saturate(150%);
             backdrop-filter: blur(25px) saturate(150%);
             border: 0.5px solid rgba(255, 255, 255, 0.1);
-            
             border-radius: 20px;
             padding: 5px 8px 5px 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .contact-name {
@@ -152,7 +153,7 @@
         }
 
         .contact-name-container svg {
-            fill: rgba(235, 235, 245, 0.6); /* Полупрозрачная стрелочка */
+            fill: rgba(235, 235, 245, 0.6);
             width: 14px;
             height: 14px;
         }
@@ -168,7 +169,7 @@
             bottom: 0;
             width: 100%;
             background-color: transparent;
-            padding: calc(env(safe-area-inset-top, 0px) + 160px) 16px calc(env(safe-area-inset-bottom, 0px) + 90px) 16px;
+            padding: calc(env(safe-area-inset-top, 0px) + 175px) 16px calc(env(safe-area-inset-bottom, 0px) + 90px) 16px;
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch; 
@@ -190,12 +191,25 @@
             letter-spacing: -0.1px;
         }
 
+        /* --- Анимация появления сообщений --- */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* --- Пузыри сообщений --- */
         .message-row {
             display: flex;
             width: 100%;
             margin-bottom: 4px;
             position: relative;
+            animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; /* Добавлена анимация */
         }
 
         .message-row.sent {
@@ -210,7 +224,7 @@
             position: relative;
             padding: 9px 15px;
             font-size: 17px;
-            line-height: 1.35;
+            line-height: 1.3;
             max-width: 78%;
             word-wrap: break-word;
             letter-spacing: -0.2px;
@@ -277,7 +291,7 @@
         }
 
         .message-bubble p {
-            margin-bottom: 14px; 
+            margin-bottom: 10px; /* Сделал отступы чуть плотнее */
         }
         .message-bubble p:last-child {
             margin-bottom: 0;
@@ -289,9 +303,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: var(--ios-blur-bg);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            backdrop-filter: blur(30px) saturate(180%);
+            background-color: transparent; /* Сделано полностью прозрачным */
             padding: 8px 12px calc(env(safe-area-inset-bottom, 0px) + 12px) 12px;
             display: flex;
             align-items: flex-end;
@@ -315,6 +327,10 @@
             fill: var(--ios-text-secondary);
             width: 20px;
             height: 20px;
+        }
+        .add-btn:active, .mic-btn:active {
+            opacity: 0.6;
+            transform: scale(0.92);
         }
 
         .input-wrapper {
@@ -368,8 +384,9 @@
             align-items: center;
             cursor: pointer;
             padding-left: 8px;
-            width: 26px;
-            height: 26px;
+            width: 32px; /* Увеличено */
+            height: 32px; /* Увеличено */
+            transition: all 0.1s ease;
         }
     </style>
 </head>
@@ -409,10 +426,10 @@
         
         <div class="input-wrapper">
             <div class="input-theme">
-                <input type="text" placeholder="Betreff" disabled>
+                <input type="text" placeholder="Тема" disabled>
             </div>
             <div class="input-message-row">
-                <input type="text" inputmode="numeric" id="messageInput" placeholder="Textnachricht • SMS" autocomplete="off">
+                <input type="text" inputmode="numeric" id="messageInput" placeholder="Сообщение • SMS" autocomplete="off">
                 <button class="mic-btn" id="actionBtn">
                     <svg viewBox="0 0 24 24" style="fill: #8e8e93; width: 16px; height: 20px;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                 </button>
@@ -427,7 +444,7 @@
     const messageInput = document.getElementById('messageInput');
     const actionBtn = document.getElementById('actionBtn');
     
-    const STORAGE_KEY = 'ios_sms_history_rtec_v5'; 
+    const STORAGE_KEY = 'ios_sms_history_rtec_v6'; 
     
     const defaultHistory = [
         { type: 'received', text: '<p>Codul este greșit.</p>', date: '2026-07-29T07:54:00.000Z' },
@@ -445,20 +462,22 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(chatHistory));
     }
 
-    const micSvg = `<svg viewBox="0 0 24 24" style="fill: #8e8e93; width: 16px; height: 20px;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>`;
-    const sendSvg = `<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="13" fill="#34C759"/><path d="M13 7 L8 12 L9.4 13.4 L12 10.8 V18 H14 V10.8 L16.6 13.4 L18 12 Z" fill="#FFFFFF"/></svg>`;
+    const micSvg = `<svg viewBox="0 0 24 24" style="fill: #8e8e93; width: 20px; height: 24px;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>`;
+    
+    // SVG кнопки "Отправить" увеличен до 32x32
+    const sendSvg = `<svg width="32" height="32" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="13" fill="#34C759"/><path d="M13 7 L8 12 L9.4 13.4 L12 10.8 V18 H14 V10.8 L16.6 13.4 L18 12 Z" fill="#FFFFFF"/></svg>`;
 
-    const shortDays = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
-    const shortMonths = ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.'];
-
+    // Функция форматирования дат на русский язык (например: "ср, 29 июл., 07:56")
     function formatSystemDate(dateStr) {
         const d = new Date(dateStr);
-        const dayName = shortDays[d.getDay()];
-        const day = d.getDate();
-        const month = shortMonths[d.getMonth()];
-        const hours = String(d.getHours()).padStart(2, '0');
-        const mins = String(d.getMinutes()).padStart(2, '0');
-        return `${dayName} ${day}. ${month}, ${hours}:${mins}`;
+        const options = { 
+            weekday: 'short', 
+            day: 'numeric', 
+            month: 'short', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        };
+        return d.toLocaleDateString('ru-RU', options);
     }
 
     function formatTicketDate(dateStr) {
@@ -487,7 +506,7 @@
         
         setTimeout(() => {
             if (chatArea.scrollHeight > chatArea.clientHeight) {
-                chatArea.scrollTop = 50; 
+                chatArea.scrollTop = chatArea.scrollHeight; 
             }
         }, 100);
     }
